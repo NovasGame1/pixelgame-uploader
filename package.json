@@ -1,7 +1,6 @@
 {
   "name": "pixelgame-uploader",
   "version": "1.0.0",
-  "description": "A simple uploader for PixelGame Studio JSON builds",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -12,6 +11,5 @@
   },
   "engines": {
     "node": ">=14.0.0"
-  },
-  "license": "MIT"
+  }
 }
