@@ -1,9 +1,9 @@
-// upload.js - Updated with correct export path to Unity's real folder
+// upload.js - Includes auto git init + remote setup if needed
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// REAL export folder from Unity
+// Export path from Unity
 const exportFolder = "C:/Users/Isaac/PixelGameStudio/EXPORT";
 
 if (!fs.existsSync(exportFolder)) {
@@ -18,6 +18,7 @@ if (files.length === 0) {
   process.exit(0);
 }
 
+// Ensure files are copied to repo
 files.forEach(file => {
   const from = path.join(exportFolder, file);
   const to = path.join(__dirname, file);
@@ -26,10 +27,20 @@ files.forEach(file => {
 });
 
 try {
+  // Check if inside a Git repo
+  try {
+    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+  } catch {
+    console.log('⚙️ Not a Git repo, initializing...');
+    execSync('git init', { stdio: 'inherit' });
+    execSync('git remote add origin https://github.com/NovasGame1/pixelgame-uploader.git', { stdio: 'inherit' });
+    execSync('git pull origin main', { stdio: 'inherit' });
+  }
+
   execSync('git add .', { stdio: 'inherit' });
-  execSync(`git commit -m "Upload from PixelGame Studio"`, { stdio: 'inherit' });
-  execSync('git push', { stdio: 'inherit' });
-  console.log('🚀 Upload complete! Files are live on GitHub Pages.');
+  execSync('git commit -m "Upload from PixelGame Studio"', { stdio: 'inherit' });
+  execSync('git push origin main', { stdio: 'inherit' });
+  console.log('🚀 Upload complete to: https://github.com/NovasGame1/pixelgame-uploader/tree/main');
 } catch (err) {
   console.error('❌ Git error:', err.message);
 } 
